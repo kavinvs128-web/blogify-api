@@ -3,6 +3,7 @@ const app = express();
 const PORT = 3000;
 
 const postRouter = require('./routes/posts.routes');
+const userRouter = require('./routes/user.routes');
 
 // Welcome route
 app.get('/', (req, res) => {
