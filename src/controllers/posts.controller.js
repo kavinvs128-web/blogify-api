@@ -1,17 +1,54 @@
 const getAllPosts = (req, res) => {
-const posts = [
-  { id: 1, title: 'Controller Post 1' },
-  { id: 2, title: 'Controller Post 2' }
-];
-
-// The controller's job is to send the final response.
-res.status(200).json({
-  message: 'Posts fetched successfully',
-  data: posts
-});
+    res.status(200).json({
+        success: true, 
+        data: "Fetching all blog posts from the modular router!"
+    });
 };
 
-// We export the function in an object so we can easily add more functions later.
+const getPostById = (req, res) => {
+    const postId = req.params.id; 
+    res.status(200).json({
+        success: true,
+        data: {
+            message: `Fetching data for post with ID: ${postId}`
+        }
+    });
+};
+
+// ✅ ADD THESE FUNCTIONS
+
+const createPost = (req, res) => {
+    res.status(201).json({
+        success: true,
+        data: {
+            message: "Post created successfully"
+        }
+    });
+};
+
+const updatePost = (req, res) => {
+    res.status(200).json({
+        success: true,
+        data: {
+            message: "Post updated successfully"
+        }
+    });
+};
+
+const deletePost = (req, res) => {
+    res.status(200).json({
+        success: true,
+        data: {
+            message: "Post deleted successfully"
+        }
+    });
+};
+
+// ✅ EXPORT ALL
 module.exports = {
-getAllPosts,
+    getAllPosts,
+    getPostById,
+    createPost,
+    updatePost,
+    deletePost
 };
