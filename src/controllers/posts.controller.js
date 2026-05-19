@@ -1,32 +1,54 @@
 const postService = require('../services/posts.service');
 
-// CREATE
+// =======================
+// CREATE POST
+// =======================
 const createPost = async (req, res) => {
     try {
-        const post = await postService.createPost(req.body);
+        // IMPORTANT: attach logged-in user as author
+        const postData = {
+            ...req.body,
+            author: req.user.id
+        };
+
+        const post = await postService.createPost(postData);
+
         res.status(201).json({
             success: true,
             data: post
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-// GET ALL
+// =======================
+// GET ALL POSTS
+// =======================
 const getAllPosts = async (req, res) => {
     try {
         const posts = await postService.getAllPosts();
+
         res.status(200).json({
             success: true,
             data: posts
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-// GET BY ID
+// =======================
+// GET POST BY ID
+// =======================
 const getPostById = async (req, res) => {
     try {
         const post = await postService.getPostById(req.params.id);
@@ -42,15 +64,21 @@ const getPostById = async (req, res) => {
             success: true,
             data: post
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-// UPDATE
+// =======================
+// UPDATE POST (AUTHORISED)
+// =======================
 const updatePost = async (req, res) => {
     try {
-        const post = await postService.updatePost(req.params.id, req.body);
+        const post = await postService.getPostById(req.params.id);
 
         if (!post) {
             return res.status(404).json({
@@ -58,20 +86,39 @@ const updatePost = async (req, res) => {
                 message: "Post not found"
             });
         }
+
+        // AUTHORIZATION CHECK
+        if (post.author.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to update this post"
+            });
+        }
+
+        const updatedPost = await postService.updatePost(
+            req.params.id,
+            req.body
+        );
 
         res.status(200).json({
             success: true,
-            data: post
+            data: updatedPost
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
-// DELETE
+// =======================
+// DELETE POST (AUTHORISED)
+// =======================
 const deletePost = async (req, res) => {
     try {
-        const post = await postService.deletePost(req.params.id);
+        const post = await postService.getPostById(req.params.id);
 
         if (!post) {
             return res.status(404).json({
@@ -79,16 +126,33 @@ const deletePost = async (req, res) => {
                 message: "Post not found"
             });
         }
+
+        // AUTHORIZATION CHECK
+        if (post.author.toString() !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to delete this post"
+            });
+        }
+
+        await postService.deletePost(req.params.id);
 
         res.status(200).json({
             success: true,
             message: "Post deleted successfully"
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
 };
 
+// =======================
+// EXPORTS
+// =======================
 module.exports = {
     createPost,
     getAllPosts,
