@@ -1,6 +1,6 @@
-const Post = require('../models/post.model');
+const Post = require('../Models/post.model');
 
-require('../models/user.model');
+require('../Models/user.model');
 
 exports.createPost = (data) => Post.create(data);
 

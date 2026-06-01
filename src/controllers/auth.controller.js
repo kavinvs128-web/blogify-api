@@ -141,5 +141,6 @@ const practiceTokenGeneration = (req, res) => {
 
 module.exports = {
   registerUser,
+  loginUser,
   practiceTokenGeneration
 };

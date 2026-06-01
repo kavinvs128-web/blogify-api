@@ -9,7 +9,7 @@ const registrationRules = [
   body('username').notEmpty().withMessage('Username is required'),
 ];
 
-router.post('/register', registrationRules, authController.registerUser);
+router.post('/register', registrationRules,authController.registerUser);
 router.get('/practice-token', authController.practiceTokenGeneration);
 router.post('/login', authController.loginUser);
 
